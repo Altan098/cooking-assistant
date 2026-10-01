@@ -8,7 +8,7 @@ export default function RecipeDetailsPage() {
 
   if (!recipe) {
     return (
-      <Box>
+      <Box component="div">
         <Typography variant="h5">Рецепт не найден</Typography>
         <Button component={RouterLink} to="/recipes" sx={{ mt: 2 }}>
           К каталогу
@@ -18,18 +18,35 @@ export default function RecipeDetailsPage() {
   }
 
   return (
-    <Box>
+    <Box component="div">
       <Button component={RouterLink} to="/recipes" sx={{ mb: 2 }}>
         Назад
       </Button>
+
       <Typography variant="h4" gutterBottom>
         {recipe.title}
       </Typography>
-      <Typography color="text.secondary" mb={2}>
+
+      <Box
+        component="img"
+        src={recipe.image}
+        alt={recipe.title}
+        sx={{
+          width: '100%',
+          maxHeight: 500,
+          objectFit: 'contain',
+          borderRadius: 2,
+          mb: 3,
+          bgcolor: '#f0f0f0',
+        }}
+      />
+
+      <Typography component="p" color="text.secondary" sx={{ mb: 2 }}>
         {recipe.description}
       </Typography>
-      <Typography variant="body2" mb={3}>
-        {recipe.cookingTime} мин · {recipe.servings} порц.
+
+      <Typography component="p" variant="body2" sx={{ mb: 3 }}>
+        {`${recipe.cookingTime} мин · ${recipe.servings} порц.`}
       </Typography>
 
       <Typography variant="h6">Ингредиенты</Typography>

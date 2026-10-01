@@ -37,11 +37,11 @@ export default function ShoppingListPage() {
   const remove = (id: number) => setItems(items.filter((i) => i.id !== id));
 
   return (
-    <Box maxWidth={600}>
-      <Typography variant="h4" mb={3}>
+    <Box component="div" sx={{ maxWidth: 600 }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
         Список покупок
       </Typography>
-      <Box display="flex" gap={2} mb={2}>
+      <Box component="div" sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
           fullWidth
           label="Добавить продукт"

@@ -3,8 +3,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export default function RegisterPage() {
   return (
-    <Box maxWidth={400} mx="auto">
-      <Typography variant="h4" mb={3}>
+    <Box component="div" sx={{ maxWidth: 400, mx: 'auto' }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
         Регистрация
       </Typography>
       <Stack spacing={2}>

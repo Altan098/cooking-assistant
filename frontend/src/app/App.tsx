@@ -4,8 +4,17 @@ import { router } from './router';
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#e67e22' },
-    secondary: { main: '#2c3e50' },
+    mode: 'light',
+    primary: { main: '#607d8b' },
+    secondary: { main: '#455a64' },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: '#263238',
+      secondary: '#546e7a',
+    },
   },
 });
 

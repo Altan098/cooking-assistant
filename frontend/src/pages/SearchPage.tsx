@@ -22,11 +22,11 @@ export default function SearchPage() {
   };
 
   return (
-    <Box>
-      <Typography variant="h4" mb={3}>
+    <Box component="div">
+      <Typography variant="h4" sx={{ mb: 3 }}>
         Поиск по ингредиентам
       </Typography>
-      <Box display="flex" gap={2} mb={3}>
+      <Box component="div" sx={{ display: 'flex', gap: 2, mb: 3 }}>
         <TextField
           fullWidth
           label="Введите ингредиент"
@@ -39,7 +39,7 @@ export default function SearchPage() {
       </Box>
       <Grid container spacing={3}>
         {results.map((r) => (
-          <Grid item key={r.id} xs={12} sm={6} md={4}>
+          <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <RecipeCard recipe={r} />
           </Grid>
         ))}
