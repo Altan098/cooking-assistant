@@ -1,6 +1,6 @@
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import { Typography, Box, List, ListItem, ListItemText, Button, Divider } from '@mui/material';
-import { mockRecipes } from '../data/mockRecipes';
+import { mockRecipes } from '../entities/recipe/mock';
 
 export default function RecipeDetailsPage() {
   const { id } = useParams();

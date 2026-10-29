@@ -1,7 +1,7 @@
 import { Grid, Typography, Button, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import RecipeCard from '../components/RecipeCard';
-import { mockRecipes } from '../data/mockRecipes';
+import RecipeCard from '../entities/recipe/ui/RecipeCard';
+import { mockRecipes } from '../entities/recipe/mock';
 
 export default function RecipesPage() {
   return (

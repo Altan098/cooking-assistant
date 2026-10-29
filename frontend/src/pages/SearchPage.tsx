@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid } from '@mui/material';
-import RecipeCard from '../components/RecipeCard';
-import { mockRecipes } from '../data/mockRecipes';
-import type { Recipe } from '../types/recipe';
+import { Box, Typography, Grid, Fade } from '@mui/material';
+import { SearchBar } from '../features/recipe-search';
+import RecipeCard from '../entities/recipe/ui/RecipeCard';
+import { mockRecipes } from '../entities/recipe/mock';
+import type { Recipe } from '../entities/recipe/types';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
   const [results, setResults] = useState<Recipe[]>([]);
+  const [searched, setSearched] = useState(false);
 
-  const handleSearch = () => {
-    const q = query.toLowerCase().trim();
+  const handleSearch = (q: string) => {
+    setSearched(true);
     if (!q) {
       setResults([]);
       return;
@@ -26,24 +27,30 @@ export default function SearchPage() {
       <Typography variant="h4" sx={{ mb: 3 }}>
         Поиск по ингредиентам
       </Typography>
-      <Box component="div" sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        <TextField
-          fullWidth
-          label="Введите ингредиент"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Button variant="contained" onClick={handleSearch}>
-          Найти
-        </Button>
-      </Box>
-      <Grid container spacing={3}>
-        {results.map((r) => (
-          <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <RecipeCard recipe={r} />
-          </Grid>
-        ))}
-      </Grid>
+
+      <SearchBar onSearch={handleSearch} />
+
+      {searched && results.length === 0 && (
+        <Fade in>
+          <Typography color="text.secondary" sx={{ mt: 4, textAlign: 'center' }}>
+            Ничего не найдено. Попробуйте другой ингредиент.
+          </Typography>
+        </Fade>
+      )}
+
+      {results.length > 0 && (
+        <Grid container spacing={3}>
+          {results.map((r, idx) => (
+            <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
+              <Fade in timeout={300 + idx * 100}>
+                <div>
+                  <RecipeCard recipe={r} />
+                </div>
+              </Fade>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 }

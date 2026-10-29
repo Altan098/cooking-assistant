@@ -1,22 +1,19 @@
-import { Box, Typography, TextField, Button, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { RecipeForm } from '../features/recipe-form';
+import type { RecipeFormValues } from '../features/recipe-form';
 
 export default function NewRecipePage() {
+  const handleSubmit = async (values: RecipeFormValues) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log('Отправленные данные:', values);
+  };
+
   return (
     <Box component="div" sx={{ maxWidth: 600 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Новый рецепт
       </Typography>
-      <Stack spacing={2}>
-        <TextField label="Название" fullWidth />
-        <TextField label="Описание" fullWidth multiline rows={3} />
-        <TextField label="Время приготовления (мин)" type="number" fullWidth />
-        <TextField label="Порции" type="number" fullWidth />
-        <TextField label="Ингредиенты" fullWidth multiline rows={2} />
-        <TextField label="Шаги приготовления" fullWidth multiline rows={4} />
-        <Button variant="contained" disabled>
-          Сохранить
-        </Button>
-      </Stack>
+      <RecipeForm onSubmit={handleSubmit} />
     </Box>
   );
 }

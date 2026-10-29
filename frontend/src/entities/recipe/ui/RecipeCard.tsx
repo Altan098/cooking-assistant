@@ -1,6 +1,6 @@
 import { Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import type { Recipe } from '../types/recipe';
+import type { Recipe } from '../types';
 
 interface Props {
   recipe: Recipe;
@@ -13,11 +13,7 @@ export default function RecipeCard({ recipe }: Props) {
         component="img"
         image={recipe.image}
         alt={recipe.title}
-        sx={{
-          height: 200,
-          width: '100%',
-          objectFit: 'cover',
-        }}
+        sx={{ height: 200, width: '100%', objectFit: 'cover' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6">{recipe.title}</Typography>
