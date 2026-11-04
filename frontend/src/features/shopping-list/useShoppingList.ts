@@ -1,24 +1,46 @@
 import { useState } from 'react';
+import { useRequest } from '../../shared/lib/useRequest';
+import {
+  createShoppingItem,
+  deleteShoppingItem,
+  getShoppingItems,
+  updateShoppingItem,
+} from './api';
 import type { ShoppingItem } from './types';
 
-export function useShoppingList(initial: ShoppingItem[] = []) {
-  const [items, setItems] = useState<ShoppingItem[]>(initial);
+export function useShoppingList() {
+  const request = useRequest(getShoppingItems, []);
+  const { setData } = request;
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  const add = (name: string) => {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    setItems((prev) => [...prev, { id: Date.now(), name: trimmed, done: false }]);
+  const run = async (action: () => Promise<void>) => {
+    setActionError(null);
+    try {
+      await action();
+      return true;
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Неизвестная ошибка');
+      return false;
+    }
   };
 
-  const toggle = (id: number) => {
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, done: !i.done } : i))
-    );
-  };
+  const add = (name: string) =>
+    run(async () => {
+      const item = await createShoppingItem(name);
+      setData((prev) => [...(prev ?? []), item]);
+    });
 
-  const remove = (id: number) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-  };
+  const toggle = (target: ShoppingItem) =>
+    run(async () => {
+      const updated = await updateShoppingItem(target.id, !target.done);
+      setData((prev) => prev?.map((i) => (i.id === updated.id ? updated : i)) ?? null);
+    });
 
-  return { items, add, toggle, remove };
+  const remove = (id: number) =>
+    run(async () => {
+      await deleteShoppingItem(id);
+      setData((prev) => prev?.filter((i) => i.id !== id) ?? null);
+    });
+
+  return { request, actionError, add, toggle, remove };
 }

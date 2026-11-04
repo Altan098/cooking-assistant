@@ -4,7 +4,7 @@ import type { ShoppingItem } from './types';
 
 interface Props {
   item: ShoppingItem;
-  onToggle: (id: number) => void;
+  onToggle: (item: ShoppingItem) => void;
   onRemove: (id: number) => void;
 }
 
@@ -12,12 +12,12 @@ export default function ShoppingItemRow({ item, onToggle, onRemove }: Props) {
   return (
     <ListItem
       secondaryAction={
-        <IconButton edge="end" onClick={() => onRemove(item.id)}>
+        <IconButton edge="end" aria-label={`Удалить ${item.name}`} onClick={() => onRemove(item.id)}>
           <DeleteIcon />
         </IconButton>
       }
     >
-      <Checkbox checked={item.done} onChange={() => onToggle(item.id)} />
+      <Checkbox checked={item.done} onChange={() => onToggle(item)} />
       <ListItemText
         primary={item.name}
         sx={{ textDecoration: item.done ? 'line-through' : 'none' }}

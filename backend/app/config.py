@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     # В production (HTTPS) должно быть true.
     refresh_cookie_secure: bool = False
 
+    # Пароль демо-пользователя, нужен только для python -m app.seed.
+    seed_user_password: str | None = None
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

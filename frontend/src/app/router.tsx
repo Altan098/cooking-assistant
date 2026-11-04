@@ -5,6 +5,7 @@ import HomePage from '../pages/HomePage';
 import RecipesPage from '../pages/RecipesPage';
 import RecipeDetailsPage from '../pages/RecipeDetailsPage';
 import NewRecipePage from '../pages/NewRecipePage';
+import EditRecipePage from '../pages/EditRecipePage';
 import SearchPage from '../pages/SearchPage';
 import ShoppingListPage from '../pages/ShoppingListPage';
 import MealPlanPage from '../pages/MealPlanPage';
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           { path: 'recipes/new', element: <NewRecipePage /> },
+          { path: 'recipes/:id/edit', element: <EditRecipePage /> },
           { path: 'shopping-list', element: <ShoppingListPage /> },
           { path: 'meal-plan', element: <MealPlanPage /> },
           { path: 'profile', element: <ProfilePage /> },

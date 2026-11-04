@@ -1,3 +1,5 @@
+from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from app.models import Ingredient, RecipeIngredient
@@ -9,7 +11,16 @@ def get_ingredient(db: Session, ingredient_id: int) -> Ingredient | None:
 
 
 def get_ingredient_by_name(db: Session, name: str) -> Ingredient | None:
-    return db.query(Ingredient).filter(Ingredient.name == name).first()
+    return db.query(Ingredient).filter(func.lower(Ingredient.name) == name.lower()).first()
+
+
+def get_or_create_ingredient(db: Session, name: str) -> Ingredient:
+    ingredient = get_ingredient_by_name(db, name)
+    if ingredient:
+        return ingredient
+    # ON CONFLICT: параллельный запрос мог уже добавить такое же имя.
+    db.execute(insert(Ingredient).values(name=name).on_conflict_do_nothing(index_elements=["name"]))
+    return db.query(Ingredient).filter(Ingredient.name == name).one()
 
 
 def get_ingredients(db: Session, skip: int = 0, limit: int = 100) -> list[Ingredient]:

@@ -1,4 +1,5 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material';
+import { Box, Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Link as RouterLink } from 'react-router-dom';
 import type { Recipe } from '../types';
 
@@ -9,12 +10,28 @@ interface Props {
 export default function RecipeCard({ recipe }: Props) {
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardMedia
-        component="img"
-        image={recipe.image}
-        alt={recipe.title}
-        sx={{ height: 200, width: '100%', objectFit: 'cover' }}
-      />
+      {recipe.image ? (
+        <CardMedia
+          component="img"
+          image={recipe.image}
+          alt={recipe.title}
+          sx={{ height: 200, width: '100%', objectFit: 'cover' }}
+        />
+      ) : (
+        <Box
+          component="div"
+          sx={{
+            height: 200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: '#eceff1',
+            color: 'text.secondary',
+          }}
+        >
+          <RestaurantIcon fontSize="large" />
+        </Box>
+      )}
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6">{recipe.title}</Typography>
         <Typography component="p" variant="body2" color="text.secondary">

@@ -14,3 +14,7 @@ class RecipeIngredient(Base):
 
     recipe: Mapped["Recipe"] = relationship(back_populates="ingredients")
     ingredient: Mapped["Ingredient"] = relationship(back_populates="recipe_links")
+
+    @property
+    def name(self) -> str:
+        return self.ingredient.name

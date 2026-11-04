@@ -1,9 +1,13 @@
 import { Grid, Typography, Button, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import RecipeCard from '../entities/recipe/ui/RecipeCard';
-import { mockRecipes } from '../entities/recipe/mock';
+import { getRecipes } from '../entities/recipe/api';
+import { useRequest } from '../shared/lib/useRequest';
+import DataState from '../shared/ui/DataState';
 
 export default function RecipesPage() {
+  const request = useRequest(() => getRecipes(), []);
+
   return (
     <Box component="div">
       <Box
@@ -20,13 +24,21 @@ export default function RecipesPage() {
           Добавить рецепт
         </Button>
       </Box>
-      <Grid container spacing={3}>
-        {mockRecipes.map((r) => (
-          <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <RecipeCard recipe={r} />
+      <DataState
+        request={request}
+        isEmpty={(recipes) => recipes.length === 0}
+        emptyText="Рецептов пока нет. Добавьте первый!"
+      >
+        {(recipes) => (
+          <Grid container spacing={3}>
+            {recipes.map((r) => (
+              <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <RecipeCard recipe={r} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        )}
+      </DataState>
     </Box>
   );
 }

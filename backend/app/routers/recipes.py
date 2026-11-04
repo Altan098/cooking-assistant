@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.crud import recipe as crud_recipe
@@ -20,8 +20,14 @@ def get_own_recipe(recipe_id: int, current_user: User, db: Session) -> Recipe:
 
 
 @router.get("/", response_model=list[RecipeRead])
-def list_recipes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud_recipe.get_recipes(db, skip=skip, limit=limit)
+def list_recipes(
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=200),
+    ingredient: str | None = Query(default=None, max_length=100),
+    author_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    return crud_recipe.get_recipes(db, skip=skip, limit=limit, ingredient=ingredient, author_id=author_id)
 
 
 @router.get("/{recipe_id}", response_model=RecipeRead)

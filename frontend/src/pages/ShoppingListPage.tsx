@@ -7,12 +7,7 @@ export default function ShoppingListPage() {
       <Typography variant="h4" sx={{ mb: 3 }}>
         Список покупок
       </Typography>
-      <ShoppingList
-        initial={[
-          { id: 1, name: 'Спагетти', done: false },
-          { id: 2, name: 'Бекон', done: false },
-        ]}
-      />
+      <ShoppingList />
     </Box>
   );
 }

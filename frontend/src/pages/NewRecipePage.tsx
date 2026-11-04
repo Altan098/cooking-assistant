@@ -1,11 +1,15 @@
 import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { createRecipe } from '../entities/recipe/api';
+import type { RecipeInput } from '../entities/recipe/types';
 import { RecipeForm } from '../features/recipe-form';
-import type { RecipeFormValues } from '../features/recipe-form';
 
 export default function NewRecipePage() {
-  const handleSubmit = async (values: RecipeFormValues) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Отправленные данные:', values);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (input: RecipeInput) => {
+    const recipe = await createRecipe(input);
+    navigate(`/recipes/${recipe.id}`);
   };
 
   return (

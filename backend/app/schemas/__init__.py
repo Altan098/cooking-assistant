@@ -9,6 +9,8 @@ from app.schemas.recipe import (
     StepBase,
     StepRead,
 )
+from app.schemas.shopping_item import ShoppingItemCreate, ShoppingItemRead, ShoppingItemUpdate
+from app.schemas.meal_plan import MealPlanEntryRead, MealPlanSet, MealType
 
 __all__ = [
     "AuthResponse",
@@ -24,4 +26,10 @@ __all__ = [
     "RecipeIngredientRead",
     "StepBase",
     "StepRead",
+    "ShoppingItemCreate",
+    "ShoppingItemRead",
+    "ShoppingItemUpdate",
+    "MealPlanEntryRead",
+    "MealPlanSet",
+    "MealType",
 ]
