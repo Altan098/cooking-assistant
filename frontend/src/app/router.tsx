@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../shared/ui/Layout';
+import { RequireAuth, UserMenu } from '../features/auth';
 import HomePage from '../pages/HomePage';
 import RecipesPage from '../pages/RecipesPage';
 import RecipeDetailsPage from '../pages/RecipeDetailsPage';
@@ -14,18 +15,23 @@ import RegisterPage from '../pages/RegisterPage';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <Layout navbarActions={<UserMenu />} />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'recipes', element: <RecipesPage /> },
-      { path: 'recipes/new', element: <NewRecipePage /> },
       { path: 'recipes/:id', element: <RecipeDetailsPage /> },
       { path: 'search', element: <SearchPage /> },
-      { path: 'shopping-list', element: <ShoppingListPage /> },
-      { path: 'meal-plan', element: <MealPlanPage /> },
-      { path: 'profile', element: <ProfilePage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
+      {
+        element: <RequireAuth />,
+        children: [
+          { path: 'recipes/new', element: <NewRecipePage /> },
+          { path: 'shopping-list', element: <ShoppingListPage /> },
+          { path: 'meal-plan', element: <MealPlanPage /> },
+          { path: 'profile', element: <ProfilePage /> },
+        ],
+      },
     ],
   },
 ]);

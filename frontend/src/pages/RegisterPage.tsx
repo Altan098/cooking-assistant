@@ -1,26 +1,27 @@
-import { Box, Typography, TextField, Button, Stack, Link } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, Link } from '@mui/material';
+import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
+import { RegisterForm, useAuth } from '../features/auth';
 
 export default function RegisterPage() {
+  const { status } = useAuth();
+  const location = useLocation();
+
+  if (status === 'authenticated') {
+    return <Navigate to={location.state?.from ?? '/profile'} replace />;
+  }
+
   return (
     <Box component="div" sx={{ maxWidth: 400, mx: 'auto' }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Регистрация
       </Typography>
-      <Stack spacing={2}>
-        <TextField label="Имя" fullWidth />
-        <TextField label="Email" type="email" fullWidth />
-        <TextField label="Пароль" type="password" fullWidth />
-        <Button variant="contained" disabled>
-          Создать аккаунт
-        </Button>
-        <Typography variant="body2">
-          Уже есть аккаунт?{' '}
-          <Link component={RouterLink} to="/login">
-            Войти
-          </Link>
-        </Typography>
-      </Stack>
+      <RegisterForm />
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        Уже есть аккаунт?{' '}
+        <Link component={RouterLink} to="/login" state={location.state}>
+          Войти
+        </Link>
+      </Typography>
     </Box>
   );
 }

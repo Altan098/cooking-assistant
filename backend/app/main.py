@@ -1,16 +1,19 @@
 from fastapi import FastAPI
 
-from app.routers import ingredients, recipes, users
+from app.routers import auth, ingredients, recipes, users
 
 app = FastAPI(
     title="Cooking Assistant API",
-    version="0.1.0",
+    version="0.2.0",
     description="Backend для приложения «Ассистент повара»",
 )
 
-app.include_router(users.router)
-app.include_router(ingredients.router)
-app.include_router(recipes.router)
+API_PREFIX = "/api"
+
+app.include_router(auth.router, prefix=API_PREFIX)
+app.include_router(users.router, prefix=API_PREFIX)
+app.include_router(ingredients.router, prefix=API_PREFIX)
+app.include_router(recipes.router, prefix=API_PREFIX)
 
 
 @app.get("/")

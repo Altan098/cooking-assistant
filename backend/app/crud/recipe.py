@@ -12,14 +12,14 @@ def get_recipes(db: Session, skip: int = 0, limit: int = 100) -> list[Recipe]:
     return db.query(Recipe).offset(skip).limit(limit).all()
 
 
-def create_recipe(db: Session, data: RecipeCreate) -> Recipe:
+def create_recipe(db: Session, data: RecipeCreate, author_id: int) -> Recipe:
     recipe = Recipe(
         title=data.title,
         description=data.description,
         image_url=data.image_url,
         cooking_time=data.cooking_time,
         servings=data.servings,
-        author_id=data.author_id,
+        author_id=author_id,
     )
     db.add(recipe)
     db.flush()
@@ -35,10 +35,7 @@ def create_recipe(db: Session, data: RecipeCreate) -> Recipe:
     return recipe
 
 
-def update_recipe(db: Session, recipe_id: int, data: RecipeUpdate) -> Recipe | None:
-    recipe = db.get(Recipe, recipe_id)
-    if not recipe:
-        return None
+def update_recipe(db: Session, recipe: Recipe, data: RecipeUpdate) -> Recipe:
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(recipe, field, value)
     db.commit()
@@ -46,10 +43,6 @@ def update_recipe(db: Session, recipe_id: int, data: RecipeUpdate) -> Recipe | N
     return recipe
 
 
-def delete_recipe(db: Session, recipe_id: int) -> bool:
-    recipe = db.get(Recipe, recipe_id)
-    if not recipe:
-        return False
+def delete_recipe(db: Session, recipe: Recipe) -> None:
     db.delete(recipe)
     db.commit()
-    return True

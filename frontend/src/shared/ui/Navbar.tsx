@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -10,7 +11,11 @@ const links = [
   { to: '/profile', label: 'Профиль' },
 ];
 
-export default function Navbar() {
+interface Props {
+  actions?: ReactNode;
+}
+
+export default function Navbar({ actions }: Props) {
   return (
     <AppBar position="static">
       <Toolbar sx={{ flexWrap: 'wrap', gap: 1 }}>
@@ -22,9 +27,7 @@ export default function Navbar() {
             {l.label}
           </Button>
         ))}
-        <Button color="inherit" component={RouterLink} to="/login">
-          Войти
-        </Button>
+        {actions}
       </Toolbar>
     </AppBar>
   );

@@ -34,7 +34,6 @@ class RecipeBase(BaseModel):
 
 
 class RecipeCreate(RecipeBase):
-    author_id: int
     ingredients: list[RecipeIngredientBase] = []
     steps: list[StepBase] = []
 

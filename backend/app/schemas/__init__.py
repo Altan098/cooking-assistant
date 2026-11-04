@@ -1,4 +1,4 @@
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import AuthResponse, UserCreate, UserLogin, UserRead
 from app.schemas.ingredient import IngredientCreate, IngredientRead
 from app.schemas.recipe import (
     RecipeCreate,
@@ -11,7 +11,9 @@ from app.schemas.recipe import (
 )
 
 __all__ = [
+    "AuthResponse",
     "UserCreate",
+    "UserLogin",
     "UserRead",
     "IngredientCreate",
     "IngredientRead",

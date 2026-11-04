@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from app.models import Ingredient
+from app.models import Ingredient, RecipeIngredient
 from app.schemas import IngredientCreate
 
 
@@ -24,10 +24,10 @@ def create_ingredient(db: Session, data: IngredientCreate) -> Ingredient:
     return ingredient
 
 
-def delete_ingredient(db: Session, ingredient_id: int) -> bool:
-    ingredient = db.get(Ingredient, ingredient_id)
-    if not ingredient:
-        return False
+def is_ingredient_used(db: Session, ingredient_id: int) -> bool:
+    return db.query(RecipeIngredient.id).filter(RecipeIngredient.ingredient_id == ingredient_id).first() is not None
+
+
+def delete_ingredient(db: Session, ingredient: Ingredient) -> None:
     db.delete(ingredient)
     db.commit()
-    return True
