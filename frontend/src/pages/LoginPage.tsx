@@ -1,8 +1,10 @@
-import { Box, Typography, Link } from '@mui/material';
+import { Link } from '@mui/material';
 import { Link as RouterLink, Navigate, useLocation } from 'react-router-dom';
-import { LoginForm, useAuth } from '../features/auth';
+import { AuthCard, LoginForm, useAuth } from '../features/auth';
+import { useDocumentTitle } from '../shared/lib/useDocumentTitle';
 
 export default function LoginPage() {
+  useDocumentTitle('Вход');
   const { status } = useAuth();
   const location = useLocation();
 
@@ -11,17 +13,19 @@ export default function LoginPage() {
   }
 
   return (
-    <Box component="div" sx={{ maxWidth: 400, mx: 'auto' }}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Вход
-      </Typography>
+    <AuthCard
+      title="Вход"
+      subtitle="Рады видеть вас снова."
+      footer={
+        <>
+          Нет аккаунта?{' '}
+          <Link component={RouterLink} to="/register" state={location.state}>
+            Зарегистрироваться
+          </Link>
+        </>
+      }
+    >
       <LoginForm />
-      <Typography variant="body2" sx={{ mt: 2 }}>
-        Нет аккаунта?{' '}
-        <Link component={RouterLink} to="/register" state={location.state}>
-          Зарегистрироваться
-        </Link>
-      </Typography>
-    </Box>
+    </AuthCard>
   );
 }

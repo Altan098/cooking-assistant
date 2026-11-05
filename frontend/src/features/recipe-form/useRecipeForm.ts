@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getErrorMessage } from '../../shared/api/client';
 import type { Recipe, RecipeInput } from '../../entities/recipe/types';
 import type {
   IngredientRow,
@@ -98,7 +99,7 @@ export function useRecipeForm(
       setStatus('idle');
     } catch (e) {
       setStatus('error');
-      setSubmitError(e instanceof Error ? e.message : 'Неизвестная ошибка');
+      setSubmitError(getErrorMessage(e));
     }
   };
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { DependencyList, Dispatch, SetStateAction } from 'react';
+import { ApiError, getErrorMessage } from '../api/client';
 
 export interface RequestState<T> {
   data: T | null;
@@ -27,8 +28,10 @@ export function useRequest<T>(load: () => Promise<T>, deps: DependencyList): Req
         if (requestId === lastRequest.current) setData(result);
       })
       .catch((e: unknown) => {
+        // Ответы API — штатная ситуация, в консоль попадают только ошибки в коде.
+        if (!(e instanceof ApiError)) console.error(e);
         if (requestId === lastRequest.current) {
-          setError(e instanceof Error ? e : new Error('Неизвестная ошибка'));
+          setError(e instanceof ApiError ? e : new Error(getErrorMessage(e)));
         }
       })
       .finally(() => {

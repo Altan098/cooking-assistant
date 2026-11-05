@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
-import { Alert, Box, Button, CircularProgress, Fade, Typography } from '@mui/material';
+import { Alert, Button, Fade, Typography } from '@mui/material';
 import { ApiError } from '../api/client';
 import type { RequestState } from '../lib/useRequest';
+import PageLoader from './PageLoader';
 
 interface Props<T> {
   request: RequestState<T>;
   isEmpty?: (data: T) => boolean;
   emptyText?: string;
+  loader?: ReactNode;
   children: (data: T) => ReactNode;
 }
 
@@ -14,7 +16,7 @@ function canRetry(error: Error) {
   return !(error instanceof ApiError) || error.status === 0 || error.status >= 500;
 }
 
-export default function DataState<T>({ request, isEmpty, emptyText, children }: Props<T>) {
+export default function DataState<T>({ request, isEmpty, emptyText, loader, children }: Props<T>) {
   const { data, error, reload } = request;
 
   if (error) {
@@ -34,18 +36,12 @@ export default function DataState<T>({ request, isEmpty, emptyText, children }: 
     );
   }
 
-  if (data === null) {
-    return (
-      <Box component="div" sx={{ display: 'flex', justifyContent: 'center', my: 6 }}>
-        <CircularProgress aria-label="Загрузка" />
-      </Box>
-    );
-  }
+  if (data === null) return loader ?? <PageLoader />;
 
   if (isEmpty?.(data)) {
     return (
       <Fade in>
-        <Typography color="text.secondary" sx={{ mt: 4, textAlign: 'center' }}>
+        <Typography color="text.secondary" sx={{ my: 6, textAlign: 'center' }}>
           {emptyText}
         </Typography>
       </Fade>

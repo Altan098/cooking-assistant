@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { getErrorMessage } from '../../shared/api/client';
 import type { AuthFormErrors, AuthFormValues } from './validation';
 
 export function useAuthForm(
@@ -28,7 +29,7 @@ export function useAuthForm(
     try {
       await onSubmit(values);
     } catch (e) {
-      setSubmitError(e instanceof Error ? e.message : 'Неизвестная ошибка');
+      setSubmitError(getErrorMessage(e));
     } finally {
       setIsSubmitting(false);
     }

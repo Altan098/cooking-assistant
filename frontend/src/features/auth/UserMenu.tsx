@@ -10,7 +10,7 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Button color="inherit" component={RouterLink} to="/login">
+      <Button variant="contained" component={RouterLink} to="/login">
         Войти
       </Button>
     );
@@ -24,10 +24,14 @@ export default function UserMenu() {
 
   return (
     <>
-      <Typography variant="body2" sx={{ mx: 1 }}>
+      <Typography
+        variant="body2"
+        noWrap
+        sx={{ mx: 1, maxWidth: 140, fontWeight: 600, display: { xs: 'none', sm: 'block' } }}
+      >
         {user.username}
       </Typography>
-      <Button color="inherit" onClick={handleLogout}>
+      <Button variant="outlined" color="inherit" onClick={handleLogout}>
         Выйти
       </Button>
     </>

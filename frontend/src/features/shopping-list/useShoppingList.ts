@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getErrorMessage } from '../../shared/api/client';
 import { useRequest } from '../../shared/lib/useRequest';
 import {
   createShoppingItem,
@@ -19,7 +20,7 @@ export function useShoppingList() {
       await action();
       return true;
     } catch (e) {
-      setActionError(e instanceof Error ? e.message : 'Неизвестная ошибка');
+      setActionError(getErrorMessage(e));
       return false;
     }
   };

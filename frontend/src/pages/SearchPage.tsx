@@ -1,46 +1,40 @@
-import { useState } from 'react';
-import { Box, Typography, Grid, Fade } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
 import { SearchBar } from '../features/recipe-search';
-import RecipeCard from '../entities/recipe/ui/RecipeCard';
-import { getRecipes } from '../entities/recipe/api';
-import { useRequest } from '../shared/lib/useRequest';
-import DataState from '../shared/ui/DataState';
+import RecipeList from '../entities/recipe/ui/RecipeList';
+import { useDocumentTitle } from '../shared/lib/useDocumentTitle';
+import PageHeader from '../shared/ui/PageHeader';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState<string | null>(null);
-  const request = useRequest(
-    () => (query ? getRecipes({ ingredient: query }) : Promise.resolve([])),
-    [query]
-  );
+  useDocumentTitle('Поиск');
+  // Запрос хранится в адресе: результат можно обновить и отправить ссылкой.
+  const [params, setParams] = useSearchParams();
+  const query = params.get('ingredient') ?? '';
 
   return (
     <Box component="div">
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Поиск по ингредиентам
-      </Typography>
+      <PageHeader
+        title="Поиск по ингредиентам"
+        subtitle="Укажите, что есть дома, а мы подскажем, что из этого приготовить."
+      />
 
-      <SearchBar onSearch={setQuery} />
+      <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, mb: 4 }}>
+        <SearchBar
+          key={query}
+          initialQuery={query}
+          onSearch={(value) => setParams(value ? { ingredient: value } : {})}
+        />
+      </Paper>
 
-      {query !== null && (
-        <DataState
-          request={request}
-          isEmpty={(results) => results.length === 0}
+      {query ? (
+        <RecipeList
+          filters={{ ingredient: query }}
           emptyText="Ничего не найдено. Попробуйте другой ингредиент."
-        >
-          {(results) => (
-            <Grid container spacing={3}>
-              {results.map((r, idx) => (
-                <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Fade in timeout={300 + idx * 100}>
-                    <div>
-                      <RecipeCard recipe={r} />
-                    </div>
-                  </Fade>
-                </Grid>
-              ))}
-            </Grid>
-          )}
-        </DataState>
+        />
+      ) : (
+        <Typography color="text.secondary" sx={{ textAlign: 'center', my: 6 }}>
+          Начните с того, что лежит в холодильнике.
+        </Typography>
       )}
     </Box>
   );

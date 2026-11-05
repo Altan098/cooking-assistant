@@ -1,12 +1,14 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { ShoppingList } from '../features/shopping-list';
+import { useDocumentTitle } from '../shared/lib/useDocumentTitle';
+import PageHeader from '../shared/ui/PageHeader';
 
 export default function ShoppingListPage() {
+  useDocumentTitle('Список покупок');
+
   return (
-    <Box component="div" sx={{ maxWidth: 600 }}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Список покупок
-      </Typography>
+    <Box component="div" sx={{ maxWidth: 720, mx: 'auto' }}>
+      <PageHeader title="Список покупок" subtitle="Ничего не забудьте в магазине." />
       <ShoppingList />
     </Box>
   );

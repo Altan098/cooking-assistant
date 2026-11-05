@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function RecipePickerDialog({ title, onClose, onSelect }: Props) {
-  const request = useRequest(() => getRecipes(), []);
+  const request = useRequest(() => getRecipes({ limit: 100 }), []);
   const [recipeId, setRecipeId] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -35,10 +35,10 @@ export default function RecipePickerDialog({ title, onClose, onSelect }: Props) 
       <DialogContent>
         <DataState
           request={request}
-          isEmpty={(recipes) => recipes.length === 0}
+          isEmpty={(page) => page.items.length === 0}
           emptyText="Рецептов пока нет"
         >
-          {(recipes) => (
+          {({ items }) => (
             <TextField
               select
               fullWidth
@@ -47,7 +47,7 @@ export default function RecipePickerDialog({ title, onClose, onSelect }: Props) 
               onChange={(e) => setRecipeId(e.target.value)}
               sx={{ mt: 1 }}
             >
-              {recipes.map((r) => (
+              {items.map((r) => (
                 <MenuItem key={r.id} value={String(r.id)}>
                   {r.title}
                 </MenuItem>

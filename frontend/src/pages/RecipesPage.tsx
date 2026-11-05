@@ -1,44 +1,30 @@
-import { Grid, Typography, Button, Box } from '@mui/material';
+import { Button, Box } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { Link as RouterLink } from 'react-router-dom';
-import RecipeCard from '../entities/recipe/ui/RecipeCard';
-import { getRecipes } from '../entities/recipe/api';
-import { useRequest } from '../shared/lib/useRequest';
-import DataState from '../shared/ui/DataState';
+import RecipeList from '../entities/recipe/ui/RecipeList';
+import { useDocumentTitle } from '../shared/lib/useDocumentTitle';
+import PageHeader from '../shared/ui/PageHeader';
 
 export default function RecipesPage() {
-  const request = useRequest(() => getRecipes(), []);
+  useDocumentTitle('Рецепты');
 
   return (
     <Box component="div">
-      <Box
-        component="div"
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4">Рецепты</Typography>
-        <Button variant="contained" component={RouterLink} to="/recipes/new">
-          Добавить рецепт
-        </Button>
-      </Box>
-      <DataState
-        request={request}
-        isEmpty={(recipes) => recipes.length === 0}
-        emptyText="Рецептов пока нет. Добавьте первый!"
-      >
-        {(recipes) => (
-          <Grid container spacing={3}>
-            {recipes.map((r) => (
-              <Grid key={r.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <RecipeCard recipe={r} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </DataState>
+      <PageHeader
+        title="Рецепты"
+        subtitle="Блюда на каждый день от участников сообщества."
+        action={
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            component={RouterLink}
+            to="/recipes/new"
+          >
+            Добавить рецепт
+          </Button>
+        }
+      />
+      <RecipeList emptyText="Рецептов пока нет. Добавьте первый!" />
     </Box>
   );
 }

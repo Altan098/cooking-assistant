@@ -1,22 +1,27 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../shared/ui/Layout';
 import { RequireAuth, UserMenu } from '../features/auth';
-import HomePage from '../pages/HomePage';
-import RecipesPage from '../pages/RecipesPage';
-import RecipeDetailsPage from '../pages/RecipeDetailsPage';
-import NewRecipePage from '../pages/NewRecipePage';
-import EditRecipePage from '../pages/EditRecipePage';
-import SearchPage from '../pages/SearchPage';
-import ShoppingListPage from '../pages/ShoppingListPage';
-import MealPlanPage from '../pages/MealPlanPage';
-import ProfilePage from '../pages/ProfilePage';
-import LoginPage from '../pages/LoginPage';
-import RegisterPage from '../pages/RegisterPage';
+import ErrorPage from '../pages/ErrorPage';
+import {
+  EditRecipePage,
+  HomePage,
+  LoginPage,
+  MealPlanPage,
+  NewRecipePage,
+  NotFoundPage,
+  ProfilePage,
+  RecipeDetailsPage,
+  RecipesPage,
+  RegisterPage,
+  SearchPage,
+  ShoppingListPage,
+} from '../pages';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout navbarActions={<UserMenu />} />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'recipes', element: <RecipesPage /> },
@@ -34,6 +39,7 @@ export const router = createBrowserRouter([
           { path: 'profile', element: <ProfilePage /> },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);

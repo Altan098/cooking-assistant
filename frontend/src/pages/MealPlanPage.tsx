@@ -1,12 +1,14 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { MealPlanBoard } from '../features/meal-plan';
+import { useDocumentTitle } from '../shared/lib/useDocumentTitle';
+import PageHeader from '../shared/ui/PageHeader';
 
 export default function MealPlanPage() {
+  useDocumentTitle('Меню на неделю');
+
   return (
     <Box component="div">
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Планировщик меню
-      </Typography>
+      <PageHeader title="Меню на неделю" subtitle="Выберите блюда на каждый день." />
       <MealPlanBoard />
     </Box>
   );

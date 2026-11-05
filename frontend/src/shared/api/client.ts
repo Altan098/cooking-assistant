@@ -10,6 +10,10 @@ export class ApiError extends Error {
   }
 }
 
+export function getErrorMessage(error: unknown): string {
+  return error instanceof ApiError ? error.message : 'Что-то пошло не так. Попробуйте ещё раз';
+}
+
 interface TokenPayload {
   access_token: string;
 }

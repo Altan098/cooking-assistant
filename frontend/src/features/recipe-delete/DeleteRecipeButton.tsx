@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { getErrorMessage } from '../../shared/api/client';
 import { deleteRecipe } from '../../entities/recipe/api';
 import type { Recipe } from '../../entities/recipe/types';
 
@@ -29,7 +30,7 @@ export default function DeleteRecipeButton({ recipe, onDeleted }: Props) {
       await deleteRecipe(recipe.id);
       onDeleted();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Не удалось удалить рецепт');
+      setError(getErrorMessage(e));
       setIsDeleting(false);
     }
   };

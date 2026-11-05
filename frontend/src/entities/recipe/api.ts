@@ -13,9 +13,19 @@ interface RecipeDto {
   steps: { order: number; text: string }[];
 }
 
-interface RecipeFilters {
+export interface RecipeFilters {
   ingredient?: string;
   authorId?: number;
+}
+
+interface RecipeQuery extends RecipeFilters {
+  skip?: number;
+  limit?: number;
+}
+
+export interface RecipePage {
+  items: Recipe[];
+  total: number;
 }
 
 function fromDto(dto: RecipeDto): Recipe {
@@ -44,12 +54,16 @@ function toDto(input: RecipeInput) {
   };
 }
 
-export async function getRecipes({ ingredient, authorId }: RecipeFilters = {}): Promise<Recipe[]> {
+export async function getRecipes({ ingredient, authorId, skip, limit }: RecipeQuery = {}): Promise<RecipePage> {
   const params = new URLSearchParams();
   if (ingredient) params.set('ingredient', ingredient);
   if (authorId !== undefined) params.set('author_id', String(authorId));
+  if (skip !== undefined) params.set('skip', String(skip));
+  if (limit !== undefined) params.set('limit', String(limit));
   const query = params.size > 0 ? `?${params}` : '';
-  return (await api<RecipeDto[]>(`/recipes/${query}`)).map(fromDto);
+
+  const page = await api<{ items: RecipeDto[]; total: number }>(`/recipes/${query}`);
+  return { items: page.items.map(fromDto), total: page.total };
 }
 
 export async function getRecipe(id: number): Promise<Recipe> {

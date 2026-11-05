@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { Alert, Box, TextField, Button, Collapse, List } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  LinearProgress,
+  List,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
 import DataState from '../../shared/ui/DataState';
 import ShoppingItemRow from './ShoppingItemRow';
 import { useShoppingList } from './useShoppingList';
@@ -22,14 +32,14 @@ export default function ShoppingList() {
   };
 
   return (
-    <Box component="div">
+    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 } }}>
       <Collapse in={!!actionError}>
         <Alert severity="error" sx={{ mb: 2 }}>
           {actionError}
         </Alert>
       </Collapse>
 
-      <Box component="div" sx={{ display: 'flex', gap: 2, mb: 2 }}>
+      <Box component="div" sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
         <TextField
           fullWidth
           label="Добавить продукт"
@@ -55,14 +65,28 @@ export default function ShoppingList() {
         isEmpty={(items) => items.length === 0}
         emptyText="Список пуст. Добавьте первый продукт."
       >
-        {(items) => (
-          <List>
-            {items.map((i) => (
-              <ShoppingItemRow key={i.id} item={i} onToggle={toggle} onRemove={remove} />
-            ))}
-          </List>
-        )}
+        {(items) => {
+          const doneCount = items.filter((i) => i.done).length;
+          return (
+            <>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {`Куплено ${doneCount} из ${items.length}`}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={(doneCount / items.length) * 100}
+                aria-label="Прогресс покупок"
+                sx={{ height: 8, borderRadius: 4, mb: 1 }}
+              />
+              <List>
+                {items.map((i) => (
+                  <ShoppingItemRow key={i.id} item={i} onToggle={toggle} onRemove={remove} />
+                ))}
+              </List>
+            </>
+          );
+        }}
       </DataState>
-    </Box>
+    </Paper>
   );
 }

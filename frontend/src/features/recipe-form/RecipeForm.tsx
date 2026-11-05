@@ -6,12 +6,13 @@ import {
   Collapse,
   FormHelperText,
   IconButton,
+  Paper,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import type { RecipeInput } from '../../entities/recipe/types';
 import { useRecipeForm } from './useRecipeForm';
 import type { RecipeFormValues } from './types';
@@ -20,6 +21,8 @@ interface Props {
   initialValues?: RecipeFormValues;
   onSubmit: (input: RecipeInput) => Promise<void>;
 }
+
+const sectionStyle = { p: { xs: 2, sm: 3 } };
 
 export default function RecipeForm({ initialValues, onSubmit }: Props) {
   const form = useRecipeForm(onSubmit, initialValues);
@@ -35,121 +38,143 @@ export default function RecipeForm({ initialValues, onSubmit }: Props) {
         </Alert>
       </Collapse>
 
-      <Stack spacing={2}>
-        <TextField
-          label="Название"
-          fullWidth
-          value={values.title}
-          onChange={(e) => setField('title', e.target.value)}
-          error={!!errors.title}
-          helperText={errors.title}
-          disabled={isSubmitting}
-        />
-
-        <TextField
-          label="Описание"
-          fullWidth
-          multiline
-          rows={3}
-          value={values.description}
-          onChange={(e) => setField('description', e.target.value)}
-          disabled={isSubmitting}
-        />
-
-        <TextField
-          label="Ссылка на изображение"
-          fullWidth
-          value={values.image}
-          onChange={(e) => setField('image', e.target.value)}
-          error={!!errors.image}
-          helperText={errors.image}
-          disabled={isSubmitting}
-        />
-
-        <TextField
-          label="Время приготовления (мин)"
-          type="number"
-          fullWidth
-          value={values.cookingTime}
-          onChange={(e) => setField('cookingTime', e.target.value)}
-          error={!!errors.cookingTime}
-          helperText={errors.cookingTime}
-          disabled={isSubmitting}
-        />
-
-        <TextField
-          label="Порции"
-          type="number"
-          fullWidth
-          value={values.servings}
-          onChange={(e) => setField('servings', e.target.value)}
-          error={!!errors.servings}
-          helperText={errors.servings}
-          disabled={isSubmitting}
-        />
-
-        <Typography variant="h6">Ингредиенты</Typography>
-        {values.ingredients.map((row, index) => (
-          <Stack key={index} component="div" direction="row" spacing={1}>
+      <Stack spacing={3}>
+        <Paper variant="outlined" sx={sectionStyle}>
+          <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+            Основное
+          </Typography>
+          <Stack spacing={2}>
             <TextField
-              label={`Ингредиент ${index + 1}`}
+              label="Название"
               fullWidth
-              value={row.name}
-              onChange={(e) => form.setIngredient(index, { name: e.target.value })}
+              value={values.title}
+              onChange={(e) => setField('title', e.target.value)}
+              error={!!errors.title}
+              helperText={errors.title}
               disabled={isSubmitting}
             />
-            <TextField
-              label={`Количество ${index + 1}`}
-              sx={{ width: '45%' }}
-              value={row.amount}
-              onChange={(e) => form.setIngredient(index, { amount: e.target.value })}
-              disabled={isSubmitting}
-            />
-            <IconButton
-              aria-label={`Удалить ингредиент ${index + 1}`}
-              onClick={() => form.removeIngredient(index)}
-              disabled={isSubmitting || values.ingredients.length === 1}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Stack>
-        ))}
-        {errors.ingredients && <FormHelperText error>{errors.ingredients}</FormHelperText>}
-        <Box component="div">
-          <Button startIcon={<AddIcon />} onClick={form.addIngredient} disabled={isSubmitting}>
-            Добавить ингредиент
-          </Button>
-        </Box>
 
-        <Typography variant="h6">Приготовление</Typography>
-        {values.steps.map((step, index) => (
-          <Stack key={index} component="div" direction="row" spacing={1}>
             <TextField
-              label={`Шаг ${index + 1}`}
+              label="Описание"
               fullWidth
               multiline
-              value={step}
-              onChange={(e) => form.setStep(index, e.target.value)}
+              rows={3}
+              value={values.description}
+              onChange={(e) => setField('description', e.target.value)}
               disabled={isSubmitting}
             />
-            <IconButton
-              aria-label={`Удалить шаг ${index + 1}`}
-              onClick={() => form.removeStep(index)}
-              disabled={isSubmitting || values.steps.length === 1}
-            >
-              <DeleteIcon />
-            </IconButton>
+
+            <TextField
+              label="Ссылка на изображение"
+              fullWidth
+              value={values.image}
+              onChange={(e) => setField('image', e.target.value)}
+              error={!!errors.image}
+              helperText={errors.image}
+              disabled={isSubmitting}
+            />
+
+            <Stack component="div" direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField
+                label="Время приготовления (мин)"
+                type="number"
+                fullWidth
+                value={values.cookingTime}
+                onChange={(e) => setField('cookingTime', e.target.value)}
+                error={!!errors.cookingTime}
+                helperText={errors.cookingTime}
+                disabled={isSubmitting}
+              />
+
+              <TextField
+                label="Порции"
+                type="number"
+                fullWidth
+                value={values.servings}
+                onChange={(e) => setField('servings', e.target.value)}
+                error={!!errors.servings}
+                helperText={errors.servings}
+                disabled={isSubmitting}
+              />
+            </Stack>
           </Stack>
-        ))}
-        {errors.steps && <FormHelperText error>{errors.steps}</FormHelperText>}
-        <Box component="div">
-          <Button startIcon={<AddIcon />} onClick={form.addStep} disabled={isSubmitting}>
-            Добавить шаг
-          </Button>
-        </Box>
+        </Paper>
+
+        <Paper variant="outlined" sx={sectionStyle}>
+          <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+            Ингредиенты
+          </Typography>
+          <Stack spacing={1.5}>
+            {values.ingredients.map((row, index) => (
+              <Stack key={index} component="div" direction="row" spacing={1}>
+                <TextField
+                  label={`Ингредиент ${index + 1}`}
+                  fullWidth
+                  value={row.name}
+                  onChange={(e) => form.setIngredient(index, { name: e.target.value })}
+                  disabled={isSubmitting}
+                />
+                <TextField
+                  label={`Количество ${index + 1}`}
+                  sx={{ width: '45%' }}
+                  value={row.amount}
+                  onChange={(e) => form.setIngredient(index, { amount: e.target.value })}
+                  disabled={isSubmitting}
+                />
+                <IconButton
+                  aria-label={`Удалить ингредиент ${index + 1}`}
+                  onClick={() => form.removeIngredient(index)}
+                  disabled={isSubmitting || values.ingredients.length === 1}
+                >
+                  <DeleteOutlinedIcon />
+                </IconButton>
+              </Stack>
+            ))}
+            {errors.ingredients && <FormHelperText error>{errors.ingredients}</FormHelperText>}
+            <Box component="div">
+              <Button startIcon={<AddIcon />} onClick={form.addIngredient} disabled={isSubmitting}>
+                Добавить ингредиент
+              </Button>
+            </Box>
+          </Stack>
+        </Paper>
+
+        <Paper variant="outlined" sx={sectionStyle}>
+          <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+            Приготовление
+          </Typography>
+          <Stack spacing={1.5}>
+            {values.steps.map((step, index) => (
+              <Stack key={index} component="div" direction="row" spacing={1}>
+                <TextField
+                  label={`Шаг ${index + 1}`}
+                  fullWidth
+                  multiline
+                  value={step}
+                  onChange={(e) => form.setStep(index, e.target.value)}
+                  disabled={isSubmitting}
+                />
+                <IconButton
+                  aria-label={`Удалить шаг ${index + 1}`}
+                  onClick={() => form.removeStep(index)}
+                  disabled={isSubmitting || values.steps.length === 1}
+                >
+                  <DeleteOutlinedIcon />
+                </IconButton>
+              </Stack>
+            ))}
+            {errors.steps && <FormHelperText error>{errors.steps}</FormHelperText>}
+            <Box component="div">
+              <Button startIcon={<AddIcon />} onClick={form.addStep} disabled={isSubmitting}>
+                Добавить шаг
+              </Button>
+            </Box>
+          </Stack>
+        </Paper>
 
         <Button
           variant="contained"
+          size="large"
           onClick={form.submit}
           disabled={isSubmitting}
           startIcon={isSubmitting ? <CircularProgress size={18} /> : null}

@@ -6,8 +6,8 @@ import {
   setSessionExpiredHandler,
 } from '../../shared/api/client';
 import type { User } from '../../entities/user/types';
-import { loginRequest, logoutRequest, registerRequest } from './api';
-import type { AuthResponse, LoginData, RegisterData } from './api';
+import { changePasswordRequest, loginRequest, logoutRequest, registerRequest } from './api';
+import type { AuthResponse, LoginData, PasswordChangeData, RegisterData } from './api';
 import { AuthContext } from './context';
 import type { AuthStatus } from './context';
 
@@ -25,17 +25,17 @@ export default function AuthProvider({ children }: Props) {
     setStatus('authenticated');
   }, []);
 
-  const clearSession = useCallback(() => {
+  const endSession = useCallback(() => {
     setAccessToken(null);
     setUser(null);
     setStatus('anonymous');
   }, []);
 
   useEffect(() => {
-    setSessionExpiredHandler(clearSession);
-    refreshSession<AuthResponse>().then(startSession).catch(clearSession);
+    setSessionExpiredHandler(endSession);
+    refreshSession<AuthResponse>().then(startSession).catch(endSession);
     return () => setSessionExpiredHandler(null);
-  }, [startSession, clearSession]);
+  }, [startSession, endSession]);
 
   const value = useMemo(
     () => ({
@@ -43,15 +43,18 @@ export default function AuthProvider({ children }: Props) {
       status,
       login: async (data: LoginData) => startSession(await loginRequest(data)),
       register: async (data: RegisterData) => startSession(await registerRequest(data)),
+      changePassword: async (data: PasswordChangeData) =>
+        startSession(await changePasswordRequest(data)),
       logout: async () => {
         try {
           await logoutRequest();
         } finally {
-          clearSession();
+          endSession();
         }
       },
+      endSession,
     }),
-    [user, status, startSession, clearSession]
+    [user, status, startSession, endSession]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
