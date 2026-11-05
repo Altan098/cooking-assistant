@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, String, DateTime, ForeignKey, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database import Base
+from app.core.database import Base
 
 
 class ShoppingItem(Base):

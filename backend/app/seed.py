@@ -2,14 +2,15 @@
 
 Повторный запуск безопасен: уже добавленные рецепты не дублируются.
 """
+
 import json
 import sys
 from pathlib import Path
 
-from app.config import settings
+from app.core.config import settings
+from app.core.database import SessionLocal
 from app.crud import recipe as crud_recipe
 from app.crud import user as crud_user
-from app.database import SessionLocal
 from app.schemas import RecipeCreate, UserCreate
 
 DEMO_EMAIL = "demo@example.com"

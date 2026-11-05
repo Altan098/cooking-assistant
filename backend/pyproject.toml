@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# B008: Depends() в значениях по умолчанию — штатный способ FastAPI.
+# F821: связи моделей ссылаются на классы строками, чтобы избежать циклических импортов.
+ignore = ["B008", "F821"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

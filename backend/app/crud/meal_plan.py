@@ -6,10 +6,7 @@ from app.models import MealPlanEntry
 
 def get_entries(db: Session, user_id: int) -> list[MealPlanEntry]:
     return (
-        db.query(MealPlanEntry)
-        .options(joinedload(MealPlanEntry.recipe))
-        .filter(MealPlanEntry.user_id == user_id)
-        .all()
+        db.query(MealPlanEntry).options(joinedload(MealPlanEntry.recipe)).filter(MealPlanEntry.user_id == user_id).all()
     )
 
 

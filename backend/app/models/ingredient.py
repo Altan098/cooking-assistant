@@ -1,7 +1,7 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database import Base
+from app.core.database import Base
 
 
 class Ingredient(Base):
@@ -10,4 +10,6 @@ class Ingredient(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
 
-    recipe_links: Mapped[list["RecipeIngredient"]] = relationship(back_populates="ingredient", cascade="all, delete-orphan")
+    recipe_links: Mapped[list["RecipeIngredient"]] = relationship(
+        back_populates="ingredient", cascade="all, delete-orphan"
+    )

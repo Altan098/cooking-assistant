@@ -1,34 +1,38 @@
 from datetime import datetime
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import AfterValidator, BaseModel, ConfigDict, EmailStr, Field
+
+# Адреса Ivan@mail.ru и ivan@mail.ru должны считаться одним пользователем.
+NormalizedEmail = Annotated[EmailStr, AfterValidator(str.lower)]
+NewPassword = Annotated[str, Field(min_length=8, max_length=100)]
+ExistingPassword = Annotated[str, Field(min_length=1, max_length=100)]
 
 
-class UserBase(BaseModel):
-    email: EmailStr
+class UserCreate(BaseModel):
+    email: NormalizedEmail
     username: str = Field(min_length=3, max_length=100)
-
-
-class UserCreate(UserBase):
-    password: str = Field(min_length=6, max_length=100)
-
-    @field_validator("email")
-    @classmethod
-    def normalize_email(cls, value: str) -> str:
-        return value.lower()
+    password: NewPassword
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: str = Field(min_length=1, max_length=100)
-
-    @field_validator("email")
-    @classmethod
-    def normalize_email(cls, value: str) -> str:
-        return value.lower()
+    email: NormalizedEmail
+    password: ExistingPassword
 
 
-class UserRead(UserBase):
+class PasswordChange(BaseModel):
+    current_password: ExistingPassword
+    new_password: NewPassword
+
+
+class AccountDelete(BaseModel):
+    password: ExistingPassword
+
+
+class UserRead(BaseModel):
     id: int
+    email: EmailStr
+    username: str
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

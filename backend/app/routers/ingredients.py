@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.crud import ingredient as crud_ingredient
-from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import User
 from app.schemas import IngredientCreate, IngredientRead

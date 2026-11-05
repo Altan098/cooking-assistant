@@ -1,8 +1,13 @@
+from typing import Literal
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    environment: Literal["development", "production"] = "development"
+    log_level: str = "INFO"
+
     database_url: str
 
     jwt_secret_key: str = Field(min_length=32)
@@ -12,8 +17,11 @@ class Settings(BaseSettings):
 
     refresh_cookie_name: str = "refresh_token"
     refresh_cookie_path: str = "/api/auth"
-    # В production (HTTPS) должно быть true.
+    # На сервере с HTTPS должно быть true.
     refresh_cookie_secure: bool = False
+
+    login_max_attempts: int = 5
+    login_block_minutes: int = 15
 
     # Пароль демо-пользователя, нужен только для python -m app.seed.
     seed_user_password: str | None = None
@@ -23,6 +31,10 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @property
+    def is_production(self) -> bool:
+        return self.environment == "production"
 
 
 settings = Settings()

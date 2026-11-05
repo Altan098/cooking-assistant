@@ -1,7 +1,7 @@
-from sqlalchemy import Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database import Base
+from app.core.database import Base
 
 
 class MealPlanEntry(Base):
@@ -13,6 +13,6 @@ class MealPlanEntry(Base):
     # 0 — понедельник, 6 — воскресенье.
     day: Mapped[int] = mapped_column(Integer, nullable=False)
     meal: Mapped[str] = mapped_column(String(20), nullable=False)
-    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id", ondelete="CASCADE"), nullable=False)
+    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id", ondelete="CASCADE"), index=True, nullable=False)
 
     recipe: Mapped["Recipe"] = relationship()

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.crud import shopping_item as crud_shopping
-from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import ShoppingItem, User
 from app.schemas import ShoppingItemCreate, ShoppingItemRead, ShoppingItemUpdate
