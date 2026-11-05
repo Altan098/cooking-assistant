@@ -1,234 +1,234 @@
-Ассистент повара
+# Ассистент повара
 
-Full-stack приложение для подбора рецептов, планирования меню и ведения списка покупок. Проект выполняется в рамках курса Fullstack, лабораторные работы №1–5.
+Full-stack приложение для хранения рецептов, поиска блюд по ингредиентам, ведения списка покупок и планирования меню на неделю. Проект выполнен в рамках курса Fullstack, лабораторные работы №1–5.
 
-Тема и назначение
+| Документ | Содержание |
+| --- | --- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Архитектура, слои, потоки данных, принятые решения |
+| [docs/CODE_WALKTHROUGH.md](docs/CODE_WALKTHROUGH.md) | Разбор кода: каждый файл и путь запросов |
+| [docs/DEFENSE.md](docs/DEFENSE.md) | Подготовка к защите: сценарий показа, вопросы и ответы |
+| [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) | Что сделать перед запуском для реальных пользователей |
+| [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md) | Авторы и лицензии фотографий |
 
-Приложение помогает пользователю:
-хранить личную коллекцию рецептов;
-искать блюда по имеющимся ингредиентам;
-формировать список покупок;
-планировать меню на неделю.
+## Возможности
 
-Пользовательские сценарии
+- Каталог рецептов с постраничной загрузкой и просмотр рецепта без регистрации.
+- Создание, редактирование и удаление своих рецептов.
+- Поиск рецептов по ингредиенту.
+- Личный список покупок.
+- Меню на неделю из любых рецептов каталога.
+- Регистрация, вход, выход, смена пароля и удаление аккаунта.
+- Адаптивный интерфейс с мобильным меню.
 
-Просмотр каталога рецептов.
+## Экраны
 
-Просмотр деталей рецепта.
+| Адрес | Экран | Доступ |
+| --- | --- | --- |
+| `/` | Главная | Все |
+| `/recipes` | Каталог рецептов | Все |
+| `/recipes/:id` | Рецепт | Все |
+| `/search` | Поиск по ингредиентам | Все |
+| `/login`, `/register` | Вход и регистрация | Все |
+| `/recipes/new` | Новый рецепт | После входа |
+| `/recipes/:id/edit` | Редактирование рецепта | Только автор |
+| `/shopping-list` | Список покупок | После входа |
+| `/meal-plan` | Меню на неделю | После входа |
+| `/profile` | Профиль, свои рецепты, безопасность | После входа |
 
-Добавление, редактирование и удаление своего рецепта.
+Любой другой адрес показывает страницу 404. Скриншоты лежат в [docs/screenshots](docs/screenshots): итоговое состояние показывают файлы `lr5-*.png` и `release-*.png`.
 
-Поиск рецептов по ингредиентам.
+## Стек
 
-Ведение списка покупок.
+| Часть | Технологии |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite 8, Material UI 9, React Router 7, шрифты Manrope и Playfair Display |
+| Backend | Python 3.12, FastAPI, Pydantic 2, Uvicorn |
+| База данных | PostgreSQL 18, SQLAlchemy 2, Alembic, psycopg 3 |
+| Безопасность | Argon2id, JWT (PyJWT) |
+| Качество | pytest, Ruff, Vitest, Oxlint, GitHub Actions |
+| Запуск | Docker Compose, nginx |
 
-Планирование меню на неделю.
+## Структура проекта
 
-Вход и регистрация пользователя.
-
-Экраны
-
-/ — Главная страница
-/recipes — Каталог рецептов
-/recipes/:id — Детали рецепта
-/recipes/new — Добавление рецепта (нужен вход)
-/recipes/:id/edit — Редактирование рецепта (только автор)
-/search — Поиск по ингредиентам
-/shopping-list — Список покупок (нужен вход)
-/meal-plan — Планировщик меню (нужен вход)
-/profile — Профиль и свои рецепты (нужен вход)
-/login — Вход
-/register — Регистрация
-
-Модель данных (backend)
-
-User: id, email, username, hashed_password, created_at. Связи: 1→N Recipe.
-Recipe: id, title, description, image_url, cooking_time, servings, author_id, created_at. Связи: N→1 User, 1→N RecipeIngredient, 1→N Step.
-Ingredient: id, name. Связи: 1→N RecipeIngredient.
-RecipeIngredient: id, recipe_id, ingredient_id, amount. Связи: N→1 Recipe, N→1 Ingredient.
-Step: id, recipe_id, order, text. Связи: N→1 Recipe.
-RefreshToken: id, user_id, token_hash, expires_at, revoked_at, created_at. Связи: N→1 User.
-ShoppingItem: id, user_id, name, done, created_at. Связи: N→1 User.
-MealPlanEntry: id, user_id, day, meal, recipe_id. Одна запись на день и приём пищи. Связи: N→1 User, N→1 Recipe.
-
-Схема связей:
-User 1—N Recipe 1—N RecipeIngredient N—1 Ingredient
-Recipe 1—N Step
-
-Стек
-
-Frontend:
-React 19 + TypeScript
-Vite 8
-Material UI (MUI) 9
-React Router 7
-
-Backend:
-Python 3.12
-FastAPI 0.143
-SQLAlchemy 2.1
-PostgreSQL 18
-Pydantic 2
-psycopg 3
-Uvicorn
-PyJWT (access token)
-argon2-cffi (хеширование паролей)
-
-Инструменты:
-Git + GitHub
-
-Структура проекта
-
+```text
 cooking-assistant/
-backend/
-app/
-models/ — модели SQLAlchemy
-schemas/ — Pydantic-схемы валидации
-crud/ — операции с БД
-routers/ — маршруты API
-config.py — настройки из .env
-security.py — хеширование паролей, JWT, refresh token
-dependencies.py — получение текущего пользователя
-database.py — engine, SessionLocal, Base
-main.py — точка входа FastAPI
-.env — секреты (в .gitignore)
-.env.example — пример без секретов
-requirements.txt
-frontend/
-src/
-app/ — настройка приложения, роутер, тема
-pages/ — страницы
-features/ — пользовательские действия
-entities/ — сущности предметной области
-shared/ — общие компоненты и утилиты
-package.json
-docs/
-screenshots/ — скриншоты экранов и API
-.gitignore
-README.md
+├── backend/
+│   ├── app/
+│   │   ├── core/           # настройки, подключение к БД, безопасность, логи, лимит входа
+│   │   ├── models/         # таблицы SQLAlchemy
+│   │   ├── schemas/        # схемы валидации запросов и ответов
+│   │   ├── crud/           # операции с данными
+│   │   ├── routers/        # маршруты API
+│   │   ├── dependencies.py # получение текущего пользователя
+│   │   ├── main.py         # точка входа
+│   │   └── seed.py         # демонстрационные данные
+│   ├── migrations/         # миграции Alembic
+│   ├── tests/              # автотесты
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── app/            # настройка приложения, маршруты, тема оформления
+│   │   ├── pages/          # страницы
+│   │   ├── features/       # пользовательские действия
+│   │   ├── entities/       # сущности предметной области
+│   │   └── shared/         # общий код: API-клиент, утилиты, UI
+│   ├── nginx/              # конфигурация production-сервера
+│   └── Dockerfile
+├── docs/
+├── .github/workflows/      # автоматические проверки
+├── docker-compose.yml
+└── .env.example
+```
 
-Архитектура frontend (упрощённый FSD)
+Frontend организован по упрощённому Feature-Sliced Design. Зависимости идут в одну сторону: `app → pages → features → entities → shared`.
 
-Код организован по методологии Feature-Sliced Design (упрощённо):
+## Модель данных
 
-app/ — настройка приложения: App, router, тема MUI.
-pages/ — страницы (по одной на маршрут).
-features/ — пользовательские действия: auth (вход, регистрация, выход, защита маршрутов), recipe-form (форма создания и редактирования рецепта с валидацией), recipe-delete (удаление с подтверждением), recipe-search (форма поиска), shopping-list (список покупок), meal-plan (меню на неделю).
-entities/ — сущности предметной области: recipe (типы, запросы к API, карточка), user (типы).
-shared/ — общие утилиты и UI: api (HTTP-клиент с автообновлением токена), lib (useRequest — загрузка данных), ui (Layout, Navbar, DataState — состояния загрузки, ошибки и отсутствия данных).
+```mermaid
+erDiagram
+    USER ||--o{ RECIPE : "автор"
+    USER ||--o{ REFRESH_TOKEN : "сессии"
+    USER ||--o{ SHOPPING_ITEM : "покупки"
+    USER ||--o{ MEAL_PLAN_ENTRY : "меню"
+    RECIPE ||--o{ RECIPE_INGREDIENT : "состав"
+    RECIPE ||--o{ STEP : "шаги"
+    RECIPE ||--o{ MEAL_PLAN_ENTRY : "в меню"
+    INGREDIENT ||--o{ RECIPE_INGREDIENT : "используется"
+```
 
-Направление зависимостей: app → pages → features → entities → shared.
+| Таблица | Поля |
+| --- | --- |
+| `users` | id, email, username, hashed_password, created_at |
+| `recipes` | id, title, description, image_url, cooking_time, servings, author_id, created_at |
+| `ingredients` | id, name |
+| `recipe_ingredients` | id, recipe_id, ingredient_id, amount |
+| `steps` | id, recipe_id, order, text |
+| `refresh_tokens` | id, user_id, token_hash, expires_at, revoked_at, created_at |
+| `shopping_items` | id, user_id, name, done, created_at |
+| `meal_plan_entries` | id, user_id, day, meal, recipe_id |
 
-Запуск frontend
+При удалении пользователя или рецепта связанные записи удаляются каскадно.
 
-Требуется Node.js 20+ и npm.
+## Запуск для разработки
 
+Нужны Python 3.12+, Node.js 22+ и PostgreSQL 15+.
+
+### База данных
+
+```sql
+CREATE USER cook WITH PASSWORD 'cookpass';
+CREATE DATABASE cooking_assistant OWNER cook;
+```
+
+### Backend
+
+```powershell
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+copy .env.example .env
+```
+
+В файле `.env` укажите `DATABASE_URL`, `JWT_SECRET_KEY` и `SEED_USER_PASSWORD`. Секрет можно сгенерировать так:
+
+```powershell
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+Создайте таблицы, добавьте демонстрационные рецепты и запустите сервер:
+
+```powershell
+alembic upgrade head
+python -m app.seed
+uvicorn app.main:app --reload
+```
+
+Команда `python -m app.seed` создаёт пользователя `demo@example.com` с паролем из `SEED_USER_PASSWORD` и 14 рецептов. Повторный запуск не создаёт дублей.
+
+Документация API (Swagger): <http://127.0.0.1:8000/docs>. В режиме `ENVIRONMENT=production` она отключена.
+
+Если база создана до появления миграций, один раз выполните `alembic stamp 0001`, затем `alembic upgrade head`.
+
+### Frontend
+
+```powershell
 cd frontend
 npm install
 npm run dev
+```
 
-Приложение откроется на http://localhost:5173. Запросы к /api Vite проксирует на backend (http://127.0.0.1:8000), поэтому backend должен быть запущен.
+Сайт откроется на <http://localhost:5173>. Запросы к `/api` Vite проксирует на backend. Другой адрес backend задаётся переменной `API_PROXY_TARGET`.
 
-Сборка production-версии:
+## Запуск через Docker
 
-cd frontend
-npm run build
-npm run preview
+Скопируйте `.env.example` в `.env` и заполните значения. Для проверки на своём компьютере по HTTP укажите `REFRESH_COOKIE_SECURE=false`.
 
-Запуск backend
+```powershell
+docker compose up -d --build
+docker compose exec backend python -m app.seed
+```
 
-Требования: Python 3.11+, PostgreSQL 15+.
+Сайт откроется на <http://localhost:8080>. Миграции применяются автоматически при старте backend.
 
-Подготовка БД: создайте пользователя и базу в PostgreSQL.
+## Проверки
 
-CREATE USER cook WITH PASSWORD 'cookpass';
-CREATE DATABASE cooking_assistant OWNER cook;
-
-Настройка окружения: в папке backend создайте файл .env (образец — .env.example) со строкой подключения, секретом для подписи JWT (минимум 32 символа) и паролем демо-пользователя:
-
-DATABASE_URL=postgresql://cook:cookpass@localhost:5432/cooking_assistant
-JWT_SECRET_KEY=<случайная строка>
-SEED_USER_PASSWORD=<пароль демо-пользователя>
-
-Сгенерировать секрет:
-
-python -c "import secrets; print(secrets.token_urlsafe(48))"
-
-Установка зависимостей:
-
+```powershell
 cd backend
-python -m venv .venv
-..venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+ruff check .
+pytest
+```
 
-Создание таблиц (команда добавляет и новые таблицы, существующие не меняет):
+```powershell
+cd frontend
+npm run lint
+npm test
+npm run build
+```
 
-python -c "from app.database import Base, engine; import app.models; Base.metadata.create_all(engine)"
+Тесты backend работают с PostgreSQL в отдельной схеме и не затрагивают рабочие данные. В GitHub эти проверки запускаются автоматически при каждом push в `main`.
 
-Наполнение демонстрационными рецептами (повторный запуск не создаёт дублей):
+## API
 
-python -m app.seed
+Все маршруты начинаются с `/api`. Значок 🔒 означает, что нужен access token.
 
-Команда создаёт пользователя demo@example.com с паролем из SEED_USER_PASSWORD и 8 рецептов.
+| Метод и путь | Назначение |
+| --- | --- |
+| `GET /health` | Проверка работы сервиса и БД |
+| `POST /auth/register` | Регистрация и вход |
+| `POST /auth/login` | Вход, 5 неудачных попыток блокируют вход на 15 минут |
+| `POST /auth/refresh` | Новый access token по cookie |
+| `POST /auth/logout` | Выход и отзыв refresh token |
+| `POST /auth/change-password` 🔒 | Смена пароля, остальные сессии завершаются |
+| `GET /users/me` 🔒 | Текущий пользователь |
+| `DELETE /users/me` 🔒 | Удаление аккаунта, нужен пароль |
+| `GET /recipes/` | Страница рецептов: `ingredient`, `author_id`, `skip`, `limit` |
+| `GET /recipes/{id}` | Рецепт |
+| `POST /recipes/` 🔒 | Создание рецепта |
+| `PATCH /recipes/{id}` 🔒 | Изменение своего рецепта |
+| `DELETE /recipes/{id}` 🔒 | Удаление своего рецепта |
+| `GET /ingredients/`, `GET /ingredients/{id}` | Справочник ингредиентов |
+| `POST /ingredients/` 🔒 | Добавление ингредиента |
+| `DELETE /ingredients/{id}` 🔒 | Удаление ингредиента, не используемого в рецептах |
+| `GET /shopping-list/` 🔒 | Свой список покупок |
+| `POST /shopping-list/` 🔒 | Добавление продукта |
+| `PATCH /shopping-list/{id}` 🔒 | Отметка продукта |
+| `DELETE /shopping-list/{id}` 🔒 | Удаление продукта |
+| `GET /meal-plan/` 🔒 | Своё меню |
+| `PUT /meal-plan/{day}/{meal}` 🔒 | Выбор блюда, `day` 0–6, `meal`: breakfast, lunch, dinner |
+| `DELETE /meal-plan/{day}/{meal}` 🔒 | Очистка ячейки меню |
 
-Запуск сервера:
+## История изменений
 
-uvicorn app.main:app --reload
-
-API доступно на http://127.0.0.1:8000, документация Swagger — http://127.0.0.1:8000/docs.
-
-Аутентификация и авторизация
-
-Пароли хранятся в БД в виде хешей Argon2id.
-Access token — JWT (HS256), живёт 15 минут, передаётся в заголовке Authorization: Bearer. На клиенте хранится только в памяти.
-Refresh token — случайная строка, живёт 30 дней, передаётся в cookie с флагами HttpOnly и SameSite=Lax. В таблице refresh_tokens лежит только его SHA-256.
-При обновлении работает ротация: старый refresh token отзывается и выдаётся новый. Некорректный, истёкший или отозванный токен получает ответ 401.
-Если запрос вернул 401, клиент сам обновляет access token и повторяет запрос. Если обновить не удалось, пользователь считается вышедшим.
-При выходе refresh token текущей сессии отзывается, cookie удаляется, состояние на клиенте очищается. Уже выданный access token действует до конца своего срока (не более 15 минут).
-
-Сроки действия настраиваются через ACCESS_TOKEN_EXPIRE_MINUTES и REFRESH_TOKEN_EXPIRE_DAYS. На сервере с HTTPS нужно включить REFRESH_COOKIE_SECURE=true.
-
-API
-
-Все маршруты, кроме GET /, начинаются с /api. Замок 🔒 означает, что нужен access token.
-
-GET / — проверка работы сервера
-POST /api/auth/register — регистрация и вход
-POST /api/auth/login — вход
-POST /api/auth/refresh — обновить access token по cookie
-POST /api/auth/logout — выход
-GET /api/auth/me 🔒 — текущий пользователь
-GET /api/users/{id} 🔒 — свой профиль (чужой — 403)
-DELETE /api/users/{id} 🔒 — удалить свой аккаунт (чужой — 403)
-GET /api/ingredients/ — список ингредиентов
-POST /api/ingredients/ 🔒 — создать ингредиент
-GET /api/ingredients/{id} — получить ингредиент
-DELETE /api/ingredients/{id} 🔒 — удалить ингредиент, если он не используется в рецептах
-GET /api/recipes/ — список рецептов; параметры ingredient (поиск по ингредиенту), author_id, skip, limit
-POST /api/recipes/ 🔒 — создать рецепт (автор — текущий пользователь, новые ингредиенты добавляются в справочник)
-GET /api/recipes/{id} — получить рецепт
-PATCH /api/recipes/{id} 🔒 — обновить свой рецепт, включая ингредиенты и шаги (чужой — 403)
-DELETE /api/recipes/{id} 🔒 — удалить свой рецепт (чужой — 403)
-GET /api/shopping-list/ 🔒 — свой список покупок
-POST /api/shopping-list/ 🔒 — добавить продукт
-PATCH /api/shopping-list/{id} 🔒 — отметить продукт (чужой — 404)
-DELETE /api/shopping-list/{id} 🔒 — удалить продукт (чужой — 404)
-GET /api/meal-plan/ 🔒 — своё меню на неделю
-PUT /api/meal-plan/{day}/{meal} 🔒 — выбрать блюдо (day: 0–6, meal: breakfast, lunch, dinner)
-DELETE /api/meal-plan/{day}/{meal} 🔒 — убрать блюдо
-
-Чтобы вызвать защищённый маршрут в Swagger, получите access_token через /api/auth/login и вставьте его в окно Authorize.
-
-Скриншоты
-
-Скриншоты экранов и API находятся в docs/screenshots/. Итоговое состояние приложения показывают файлы lr5-*.png: каталог, рецепт, форма, поиск, покупки, меню, профиль и состояние ошибки.
-
-История изменений интерфейса
-
-ЛР №1. Создан каркас frontend на React + TypeScript. Реализованы основные экраны с демонстрационными данными: главная, каталог рецептов, детали рецепта, добавление рецепта, поиск по ингредиентам, список покупок, планировщик меню, профиль, вход, регистрация. Настроена клиентская маршрутизация и единое оформление через MUI.
-Изменена цветовая схема на серую (палитра MUI настроена в src/app/App.tsx).
-На страницу деталей рецепта добавлено изображение блюда.
-ЛР №2. Реализован backend на FastAPI: модели SQLAlchemy, Pydantic-схемы валидации, CRUD-операции, маршруты API. Подключён PostgreSQL. Документация доступна через Swagger UI.
-ЛР №3. Frontend реорганизован по принципам FSD: логика вынесена в features/, сущности — в entities/, общие компоненты — в shared/. Формы получили клиентскую валидацию, состояния загрузки/успеха/ошибки, анимации появления сообщений (Collapse).
-ЛР №4. Реализованы регистрация и вход с хешированием паролей Argon2id, выдача JWT access token и refresh token в HttpOnly-cookie, обновление токена с ротацией, выход с отзывом refresh token. API разделено на публичные и приватные маршруты, изменять рецепт может только автор. На frontend добавлены формы входа и регистрации с валидацией, автообновление токена, защищённые маршруты и выход.
-ЛР №5. Основные экраны подключены к API, демонстрационные данные заменены данными из PostgreSQL и перенесены в команду python -m app.seed. Через интерфейс доступны просмотр, создание, редактирование и удаление рецептов с учётом прав автора, поиск на сервере, личный список покупок и меню на неделю. Состояния загрузки, ошибки и отсутствия данных работают с реальными запросами, отказы в доступе показываются понятными сообщениями. Приложение проверено целиком, обновлены README и скриншоты.
+- **ЛР №1.** Каркас frontend на React и TypeScript, основные экраны с демонстрационными данными, маршрутизация и оформление через MUI. Цветовая схема изменена на серую, на страницу рецепта добавлено изображение.
+- **ЛР №2.** Backend на FastAPI: модели SQLAlchemy, схемы Pydantic, CRUD и подключение PostgreSQL.
+- **ЛР №3.** Frontend разделён по FSD, формы получили валидацию, состояния и анимации.
+- **ЛР №4.** Регистрация и вход с хешами Argon2id, JWT access token, refresh token с ротацией, разделение публичных и приватных маршрутов, выход.
+- **ЛР №5.** Экраны подключены к API, данные хранятся в PostgreSQL, добавлены редактирование и удаление рецептов, список покупок и меню.
+- **Релиз 1.0.**
+  - Схемой БД управляют миграции Alembic: `create_all` не умеет менять существующие таблицы.
+  - Инфраструктурный код перенесён в `app/core`, текущий пользователь получается через `/users/me`, вместо публичного удаления по id добавлено удаление своего аккаунта с паролем.
+  - Минимальная длина пароля увеличена до 8 символов, добавлены лимит попыток входа и смена пароля.
+  - Каталог загружается постранично: ответ `GET /recipes/` теперь содержит `items` и `total`.
+  - Добавлены страницы 404 и ошибки, мобильное меню, разделение кода по страницам, заглушка для недоступных картинок, автотесты, Docker и CI.
+- **Редизайн.** Серая схема из ЛР №1 заменена тёплой: для приложения о еде она выглядит уместнее и делает интерфейс цельным. Тема вынесена в `app/theme.ts`. Новая главная страница с поиском и рецептами из БД, карточки-ссылки, страница рецепта с отдельными блоками ингредиентов и шагов, подвал, меню на неделю в одну строку. Поисковый запрос теперь хранится в адресе страницы, поэтому результат можно обновить и отправить ссылкой. Скриншоты обновлены.
