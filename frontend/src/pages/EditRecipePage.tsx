@@ -1,6 +1,6 @@
 import { Alert, Box } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getRecipe, updateRecipe } from '../entities/recipe/api';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { getRecipe, updateRecipe, uploadRecipeImage } from '../entities/recipe/api';
 import type { RecipeInput } from '../entities/recipe/types';
 import { useAuth } from '../features/auth';
 import { RecipeForm, recipeToFormValues } from '../features/recipe-form';
@@ -15,16 +15,23 @@ export default function EditRecipePage() {
   const recipeId = Number(id);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const request = useRequest(() => getRecipe(recipeId), [recipeId]);
 
-  const handleSubmit = async (input: RecipeInput) => {
+  const handleSubmit = async (input: RecipeInput, imageFile: File | null) => {
     await updateRecipe(recipeId, input);
+    if (imageFile) await uploadRecipeImage(recipeId, imageFile);
     navigate(`/recipes/${recipeId}`);
   };
 
   return (
     <Box component="div" sx={{ maxWidth: 720, mx: 'auto' }}>
       <PageHeader title="Редактирование рецепта" />
+      {location.state?.notice && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {location.state.notice}
+        </Alert>
+      )}
       <DataState request={request}>
         {(recipe) =>
           recipe.authorId === user?.id ? (

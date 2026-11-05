@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { RecipeFormValues } from './types';
-import { validateRecipeForm } from './validation';
+import { validateImageFile, validateRecipeForm } from './validation';
 
 const valid: RecipeFormValues = {
   title: 'Плов',
   description: '',
-  image: '',
+  image: '/api/uploads/photo.jpg',
+  imageFile: null,
   cookingTime: '40',
   servings: '4',
   ingredients: [{ name: 'Рис', amount: '2 стакана' }],
@@ -15,6 +16,22 @@ const valid: RecipeFormValues = {
 describe('validateRecipeForm', () => {
   it('принимает корректный рецепт', () => {
     expect(validateRecipeForm(valid)).toEqual({});
+  });
+
+  it('требует фото', () => {
+    expect(validateRecipeForm({ ...valid, image: '' }).image).toBe('Добавьте фото блюда');
+  });
+
+  it('принимает новый рецепт с выбранным файлом', () => {
+    const imageFile = new File(['x'], 'photo.png', { type: 'image/png' });
+    expect(validateRecipeForm({ ...valid, image: '', imageFile })).toEqual({});
+  });
+
+  it('проверяет тип и размер файла', () => {
+    const text = new File(['x'], 'notes.txt', { type: 'text/plain' });
+    const huge = new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'big.jpg', { type: 'image/jpeg' });
+    expect(validateImageFile(text)).toBe('Выберите файл JPEG, PNG или WebP');
+    expect(validateImageFile(huge)).toBe('Файл больше 5 МБ');
   });
 
   it('требует название из трёх символов', () => {

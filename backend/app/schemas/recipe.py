@@ -37,7 +37,6 @@ class StepRead(StepBase):
 class RecipeBase(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(default="", max_length=MAX_DESCRIPTION_LENGTH)
-    image_url: str = Field(default="", max_length=500)
     cooking_time: int = Field(default=0, ge=0, le=100000)
     servings: int = Field(default=1, ge=1, le=1000)
 
@@ -52,7 +51,6 @@ class RecipeCreate(RecipeBase):
 class RecipeUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=MAX_DESCRIPTION_LENGTH)
-    image_url: str | None = Field(default=None, max_length=500)
     cooking_time: int | None = Field(default=None, ge=0, le=100000)
     servings: int | None = Field(default=None, ge=1, le=1000)
     ingredients: list[RecipeIngredientBase] | None = Field(default=None, max_length=MAX_LIST_ITEMS)
@@ -64,6 +62,7 @@ class RecipeUpdate(BaseModel):
 class RecipeRead(RecipeBase):
     id: int
     author_id: int
+    image_url: str
     created_at: datetime
     ingredients: list[RecipeIngredientRead] = []
     steps: list[StepRead] = []

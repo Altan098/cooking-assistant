@@ -7,6 +7,7 @@ export interface RecipeFormValues {
   title: string;
   description: string;
   image: string;
+  imageFile: File | null;
   cookingTime: string;
   servings: string;
   ingredients: IngredientRow[];

@@ -1,6 +1,10 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
+from app.core.images import UPLOADS_URL
 from app.core.logging import configure_logging
 from app.routers import auth, health, ingredients, meal_plan, recipes, shopping_list, users
 
@@ -20,3 +24,6 @@ app = FastAPI(
 
 for module in (health, auth, users, ingredients, recipes, shopping_list, meal_plan):
     app.include_router(module.router, prefix=API_PREFIX)
+
+Path(settings.upload_dir).mkdir(parents=True, exist_ok=True)
+app.mount(UPLOADS_URL, StaticFiles(directory=settings.upload_dir), name="uploads")

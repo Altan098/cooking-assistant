@@ -9,5 +9,9 @@ select = ["E", "F", "I", "UP", "B"]
 # F821: связи моделей ссылаются на классы строками, чтобы избежать циклических импортов.
 ignore = ["B008", "F821"]
 
+[tool.ruff.lint.per-file-ignores]
+# Переменная окружения должна быть задана до импорта настроек приложения.
+"tests/conftest.py" = ["E402"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

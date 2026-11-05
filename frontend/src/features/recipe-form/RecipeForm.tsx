@@ -14,12 +14,13 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import type { RecipeInput } from '../../entities/recipe/types';
+import ImagePicker from './ImagePicker';
 import { useRecipeForm } from './useRecipeForm';
 import type { RecipeFormValues } from './types';
 
 interface Props {
   initialValues?: RecipeFormValues;
-  onSubmit: (input: RecipeInput) => Promise<void>;
+  onSubmit: (input: RecipeInput, imageFile: File | null) => Promise<void>;
 }
 
 const sectionStyle = { p: { xs: 2, sm: 3 } };
@@ -64,14 +65,12 @@ export default function RecipeForm({ initialValues, onSubmit }: Props) {
               disabled={isSubmitting}
             />
 
-            <TextField
-              label="Ссылка на изображение"
-              fullWidth
-              value={values.image}
-              onChange={(e) => setField('image', e.target.value)}
-              error={!!errors.image}
-              helperText={errors.image}
+            <ImagePicker
+              file={values.imageFile}
+              currentUrl={values.image}
+              error={errors.image}
               disabled={isSubmitting}
+              onChange={form.setImageFile}
             />
 
             <Stack component="div" direction={{ xs: 'column', sm: 'row' }} spacing={2}>

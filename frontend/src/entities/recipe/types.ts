@@ -19,7 +19,6 @@ export interface Recipe {
 export interface RecipeInput {
   title: string;
   description: string;
-  image: string;
   cookingTime: number;
   servings: number;
   ingredients: Omit<Ingredient, 'id'>[];

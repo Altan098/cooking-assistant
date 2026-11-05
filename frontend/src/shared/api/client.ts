@@ -39,14 +39,16 @@ export function setSessionExpiredHandler(handler: (() => void) | null) {
 
 async function send(path: string, { method = 'GET', body }: RequestOptions) {
   const headers: Record<string, string> = {};
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  const isForm = body instanceof FormData;
+  // Для FormData браузер сам задаёт Content-Type с границей частей.
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
   if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
   try {
     return await fetch(`${API_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: isForm ? body : body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
     throw new ApiError(0, 'Сервер недоступен. Проверьте подключение.');

@@ -10,5 +10,7 @@ export default defineConfig({
   plugins: [react()],
   server: { proxy },
   preview: { proxy },
+  // Мелкие файлы нельзя встраивать в CSS как data:, иначе шрифты заблокирует CSP на сервере.
+  build: { assetsInlineLimit: 0 },
   test: { environment: 'node' },
 })

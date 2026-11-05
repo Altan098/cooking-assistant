@@ -85,7 +85,6 @@ def test_invalid_recipe_data_is_rejected(make_user):
     anna = make_user("anna")
     for payload in (
         {"title": "   "},
-        {"title": "Суп", "image_url": "x" * 501},
         {"title": "Суп", "servings": 0},
         {"title": "Суп", "description": "x" * 5001},
         {"title": "Суп", "steps": [{"order": i, "text": "шаг"} for i in range(101)]},

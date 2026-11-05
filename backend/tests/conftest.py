@@ -1,6 +1,11 @@
 """Тесты работают с настоящим PostgreSQL, но в отдельной схеме: рабочие данные не затрагиваются."""
 
+import os
+import tempfile
 from collections.abc import Callable, Iterator
+
+# Файлы тестов не должны попадать в рабочую папку. Задаётся до импорта настроек.
+os.environ["UPLOAD_DIR"] = tempfile.mkdtemp(prefix="cooking-assistant-tests-")
 
 import pytest
 from fastapi.testclient import TestClient

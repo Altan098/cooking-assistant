@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.images import MAX_IMAGE_BYTES, InvalidImageError, delete_image, save_image
 from app.crud import recipe as crud_recipe
 from app.dependencies import get_current_user
 from app.models import Recipe, User
@@ -61,10 +62,39 @@ def update_recipe(
     return crud_recipe.update_recipe(db, recipe, data)
 
 
+@router.put("/{recipe_id}/image", response_model=RecipeRead)
+def upload_recipe_image(
+    recipe_id: int,
+    image: UploadFile = File(),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    recipe = get_own_recipe(recipe_id, current_user, db)
+
+    data = image.file.read(MAX_IMAGE_BYTES + 1)
+    if len(data) > MAX_IMAGE_BYTES:
+        raise HTTPException(status_code=status.HTTP_413_CONTENT_TOO_LARGE, detail="Файл больше 5 МБ")
+    try:
+        image_url = save_image(data)
+    except InvalidImageError:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Загрузите изображение JPEG, PNG или WebP",
+        ) from None
+
+    previous_url = recipe.image_url
+    recipe = crud_recipe.set_recipe_image(db, recipe, image_url)
+    delete_image(previous_url)
+    return recipe
+
+
 @router.delete("/{recipe_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_recipe(
     recipe_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    crud_recipe.delete_recipe(db, get_own_recipe(recipe_id, current_user, db))
+    recipe = get_own_recipe(recipe_id, current_user, db)
+    image_url = recipe.image_url
+    crud_recipe.delete_recipe(db, recipe)
+    delete_image(image_url)

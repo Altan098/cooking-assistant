@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     # На сервере с HTTPS должно быть true.
     refresh_cookie_secure: bool = False
 
+    # Папка для загруженных фотографий рецептов.
+    upload_dir: str = "uploads"
+
     login_max_attempts: int = 5
     login_block_minutes: int = 15
 

@@ -1,10 +1,18 @@
 import type { RecipeFormErrors, RecipeFormValues } from './types';
 
 const MAX_TITLE_LENGTH = 200;
-const MAX_IMAGE_LENGTH = 500;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const MAX_INGREDIENT_LENGTH = 100;
 const MAX_COOKING_TIME = 100000;
 const MAX_SERVINGS = 1000;
+
+export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+export function validateImageFile(file: File): string | undefined {
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) return 'Выберите файл JPEG, PNG или WebP';
+  if (file.size > MAX_IMAGE_BYTES) return 'Файл больше 5 МБ';
+  return undefined;
+}
 
 export function validateRecipeForm(values: RecipeFormValues): RecipeFormErrors {
   const errors: RecipeFormErrors = {};
@@ -18,8 +26,11 @@ export function validateRecipeForm(values: RecipeFormValues): RecipeFormErrors {
     errors.title = `Максимум ${MAX_TITLE_LENGTH} символов`;
   }
 
-  if (values.image.trim().length > MAX_IMAGE_LENGTH) {
-    errors.image = `Максимум ${MAX_IMAGE_LENGTH} символов`;
+  const imageError = values.imageFile ? validateImageFile(values.imageFile) : undefined;
+  if (imageError) {
+    errors.image = imageError;
+  } else if (!values.imageFile && !values.image) {
+    errors.image = 'Добавьте фото блюда';
   }
 
   const time = Number(values.cookingTime);

@@ -23,6 +23,8 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Укажите JWT_SECRET_KEY в .env}
       REFRESH_COOKIE_SECURE: ${REFRESH_COOKIE_SECURE:-true}
       SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-}
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -44,3 +46,4 @@ services:
 
 volumes:
   db-data:
+  uploads:

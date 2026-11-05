@@ -35,7 +35,7 @@ def main() -> None:
         existing = {recipe.title for recipe in crud_recipe.get_recipes(db, limit=1000, author_id=user.id)}
         new_recipes = [recipe for recipe in recipes if recipe["title"] not in existing]
         for recipe in new_recipes:
-            crud_recipe.create_recipe(db, RecipeCreate(**recipe), author_id=user.id)
+            crud_recipe.create_recipe(db, RecipeCreate(**recipe), author_id=user.id, image_url=recipe["image_url"])
 
     print(f"Добавлено рецептов: {len(new_recipes)}. Демо-пользователь: {DEMO_EMAIL}")
 

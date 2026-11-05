@@ -7,14 +7,15 @@ import type {
   RecipeFormStatus,
   RecipeFormValues,
 } from './types';
-import { validateRecipeForm } from './validation';
+import { validateImageFile, validateRecipeForm } from './validation';
 
-type TextField = 'title' | 'description' | 'image' | 'cookingTime' | 'servings';
+type TextField = 'title' | 'description' | 'cookingTime' | 'servings';
 
 const emptyValues: RecipeFormValues = {
   title: '',
   description: '',
   image: '',
+  imageFile: null,
   cookingTime: '',
   servings: '',
   ingredients: [{ name: '', amount: '' }],
@@ -26,6 +27,7 @@ export function recipeToFormValues(recipe: Recipe): RecipeFormValues {
     title: recipe.title,
     description: recipe.description,
     image: recipe.image,
+    imageFile: null,
     cookingTime: String(recipe.cookingTime),
     servings: String(recipe.servings),
     ingredients: recipe.ingredients.length
@@ -39,7 +41,6 @@ function toRecipeInput(values: RecipeFormValues): RecipeInput {
   return {
     title: values.title.trim(),
     description: values.description.trim(),
-    image: values.image.trim(),
     cookingTime: Number(values.cookingTime),
     servings: Number(values.servings),
     ingredients: values.ingredients
@@ -50,7 +51,7 @@ function toRecipeInput(values: RecipeFormValues): RecipeInput {
 }
 
 export function useRecipeForm(
-  onSubmit: (input: RecipeInput) => Promise<void>,
+  onSubmit: (input: RecipeInput, imageFile: File | null) => Promise<void>,
   initialValues: RecipeFormValues = emptyValues
 ) {
   const [values, setValues] = useState<RecipeFormValues>(initialValues);
@@ -64,6 +65,16 @@ export function useRecipeForm(
   };
 
   const setField = (field: TextField, value: string) => update(field, { [field]: value });
+
+  const setImageFile = (imageFile: File) => {
+    const error = validateImageFile(imageFile);
+    if (error) {
+      // Неподходящий файл не заменяет уже выбранное фото.
+      setErrors((prev) => ({ ...prev, image: error }));
+      return;
+    }
+    update('image', { imageFile });
+  };
 
   const setIngredient = (index: number, patch: Partial<IngredientRow>) =>
     update('ingredients', {
@@ -95,7 +106,7 @@ export function useRecipeForm(
 
     try {
       setStatus('submitting');
-      await onSubmit(toRecipeInput(values));
+      await onSubmit(toRecipeInput(values), values.imageFile);
       setStatus('idle');
     } catch (e) {
       setStatus('error');
@@ -109,6 +120,7 @@ export function useRecipeForm(
     status,
     submitError,
     setField,
+    setImageFile,
     setIngredient,
     addIngredient,
     removeIngredient,

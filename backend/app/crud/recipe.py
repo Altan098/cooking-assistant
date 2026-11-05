@@ -60,11 +60,11 @@ def count_recipes(db: Session, ingredient: str | None = None, author_id: int | N
     return filtered_recipes(db, ingredient, author_id).count()
 
 
-def create_recipe(db: Session, data: RecipeCreate, author_id: int) -> Recipe:
+def create_recipe(db: Session, data: RecipeCreate, author_id: int, image_url: str = "") -> Recipe:
     recipe = Recipe(
         title=data.title,
         description=data.description,
-        image_url=data.image_url,
+        image_url=image_url,
         cooking_time=data.cooking_time,
         servings=data.servings,
         author_id=author_id,
@@ -85,6 +85,13 @@ def update_recipe(db: Session, recipe: Recipe, data: RecipeUpdate) -> Recipe:
         recipe.ingredients = build_ingredients(db, data.ingredients)
     if data.steps is not None:
         recipe.steps = build_steps(data.steps)
+    db.commit()
+    db.refresh(recipe)
+    return recipe
+
+
+def set_recipe_image(db: Session, recipe: Recipe, image_url: str) -> Recipe:
+    recipe.image_url = image_url
     db.commit()
     db.refresh(recipe)
     return recipe

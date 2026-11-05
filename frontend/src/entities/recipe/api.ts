@@ -46,7 +46,6 @@ function toDto(input: RecipeInput) {
   return {
     title: input.title,
     description: input.description,
-    image_url: input.image,
     cooking_time: input.cookingTime,
     servings: input.servings,
     ingredients: input.ingredients,
@@ -77,6 +76,12 @@ export async function createRecipe(input: RecipeInput): Promise<Recipe> {
 
 export async function updateRecipe(id: number, input: RecipeInput): Promise<Recipe> {
   return fromDto(await api<RecipeDto>(`/recipes/${id}`, { method: 'PATCH', body: toDto(input) }));
+}
+
+export async function uploadRecipeImage(id: number, file: File): Promise<Recipe> {
+  const body = new FormData();
+  body.append('image', file);
+  return fromDto(await api<RecipeDto>(`/recipes/${id}/image`, { method: 'PUT', body }));
 }
 
 export const deleteRecipe = (id: number) => api<void>(`/recipes/${id}`, { method: 'DELETE' });

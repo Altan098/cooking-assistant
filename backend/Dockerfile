@@ -14,7 +14,7 @@ COPY migrations ./migrations
 COPY app ./app
 
 # Приложение не должно работать от root.
-RUN useradd --create-home appuser
+RUN useradd --create-home appuser && mkdir uploads && chown appuser uploads
 USER appuser
 
 EXPOSE 8000
